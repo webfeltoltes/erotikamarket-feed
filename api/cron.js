@@ -1,11 +1,11 @@
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    res.status(405).send('Method Not Allowed');
-    return;
+  // --- VERCEL CRON AUTH ---
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).send("Unauthorized");
   }
 
   const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] Lekérés érkezett a /feed.csv végpontra`);
+  console.log(`[${timestamp}] Cron lefutott /api/cron`);
 
   const url = "https://apiv1.erotikamarket.hu/service_v2/productsXmlGenerator_sk.php";
   const username = process.env.API_USER || "incike@azet.sk";
@@ -47,10 +47,10 @@ export default async function handler(req, res) {
       result += `${sku};${ar3};${ar6};${fogyar};${akcios_ar};${stock};${instock}\n`;
     }
 
-    res.setHeader("Content-Type", "text/csv; charset=UTF-8");
-    res.send(result);
+    console.log("CSV elkészült, sorok száma:", result.split("\n").length - 1);
+    res.status(200).send("Feed legenerálva");
   } catch (err) {
-    console.error(`[${new Date().toISOString()}] Hiba a feldolgozás közben:`, err);
+    console.error(`[${new Date().toISOString()}] Hiba:`, err);
     res.status(500).send("Hiba a feldolgozás közben.");
   }
 }
