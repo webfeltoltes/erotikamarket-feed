@@ -1,14 +1,13 @@
-import express from "express";
-import { Buffer } from "buffer";
+export default async function handler(req, res) {
+  if (req.method !== 'GET') {
+    res.status(405).send('Method Not Allowed');
+    return;
+  }
 
-const app = express();
-
-app.get("/feed.csv", async (req, res) => {
   const timestamp = new Date().toISOString();
   console.log(`[${timestamp}] Lekérés érkezett a /feed.csv végpontra`);
 
   const url = "https://apiv1.erotikamarket.hu/service_v2/productsXmlGenerator_sk.php";
-
   const username = process.env.API_USER || "incike@azet.sk";
   const password = process.env.API_PASS || "2007Mark";
   const auth = "Basic " + Buffer.from(`${username}:${password}`).toString("base64");
@@ -48,15 +47,10 @@ app.get("/feed.csv", async (req, res) => {
       result += `${sku};${ar3};${ar6};${fogyar};${akcios_ar};${stock};${instock}\n`;
     }
 
-    res.set("Content-Type", "text/csv; charset=UTF-8");
+    res.setHeader("Content-Type", "text/csv; charset=UTF-8");
     res.send(result);
   } catch (err) {
     console.error(`[${new Date().toISOString()}] Hiba a feldolgozás közben:`, err);
     res.status(500).send("Hiba a feldolgozás közben.");
   }
-});
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`✅ Szerver elindult: http://localhost:${port}/feed.csv`);
-});
+}
