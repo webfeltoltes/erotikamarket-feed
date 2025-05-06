@@ -1,5 +1,5 @@
-your-repo/
+erotikamarket-feed/
 ├── api/
-│   └── feed.js   ✅ <- ennek itt kell lennie!
+│   └── feed.js   ✅
 ├── package.json
-├── vercel.json   ✅ (ha van)
+├── vercel.json   ✅
