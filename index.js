@@ -1,5 +1,4 @@
 import express from "express";
-import fetch from "node-fetch";
 import { Buffer } from "buffer";
 
 const app = express();
@@ -9,8 +8,9 @@ app.get("/feed.csv", async (req, res) => {
   console.log(`[${timestamp}] Lekérés érkezett a /feed.csv végpontra`);
 
   const url = "https://apiv1.erotikamarket.hu/service_v2/productsXmlGenerator_sk.php";
-  const username = "incike@azet.sk";
-  const password = "2007Mark";
+
+  const username = process.env.API_USER || "incike@azet.sk";
+  const password = process.env.API_PASS || "2007Mark";
   const auth = "Basic " + Buffer.from(`${username}:${password}`).toString("base64");
 
   try {
