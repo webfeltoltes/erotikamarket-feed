@@ -1,9 +1,15 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/feed.js", "use": "@vercel/node" }
+    { "src": "api/cron.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/feed.csv", "dest": "/api/feed.js" }
+    { "src": "/feed.csv", "dest": "/api/cron.js" }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 5 * * *"
+    }
   ]
 }
