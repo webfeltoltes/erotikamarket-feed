@@ -1,3 +1,6 @@
+import fs from 'fs/promises';
+import path from 'path';
+
 export default async function handler(req, res) {
   // --- VERCEL CRON AUTH ---
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -48,7 +51,13 @@ export default async function handler(req, res) {
     }
 
     console.log("CSV elkészült, sorok száma:", result.split("\n").length - 1);
-    res.status(200).send("Feed legenerálva");
+
+    // --- CSV mentése fájlba (/tmp/feed.csv) ---
+    const filePath = path.join('/tmp', 'feed.csv');
+    await fs.writeFile(filePath, result, 'utf-8');
+    console.log("CSV fájl elmentve:", filePath);
+
+    res.status(200).send("Feed legenerálva és elmentve.");
   } catch (err) {
     console.error(`[${new Date().toISOString()}] Hiba:`, err);
     res.status(500).send("Hiba a feldolgozás közben.");
