@@ -42,7 +42,7 @@ export default async function handler(req, res) {
       const ar6 = getTag('ar6');
       const akcios_ar = getTag('akcios_ar');
       const stock = getTag('subcounter');
-      const instock = parseInt(stock) > 0 ? '1' : '0';
+      const instock = (['yes', 'low'].includes(stock.toLowerCase())) ? '1' : '0';
       const fogyar = ar3 && !isNaN(parseFloat(ar3)) ? (parseFloat(ar3) * 1.35).toFixed(2) : '';
 
       if (!sku) continue;
